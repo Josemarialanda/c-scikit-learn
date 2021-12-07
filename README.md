@@ -8,7 +8,7 @@ This project is independent from [scikit-learn](https://scikit-learn.org/stable/
 
 # Examples
 
-Toy example of a linear regression model ([full code])
+Toy example of a linear regression model ([full code](https://github.com/Josemarialanda/C-wrapper-scikitlearn/blob/master/examples/main.c))
 
 ```c
 #include "skl/linear_model/linear_regression/linear_regression.h"
