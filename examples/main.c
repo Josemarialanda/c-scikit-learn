@@ -1,9 +1,9 @@
-#include "skl/linear_model/linear_regression/linear_regression.h"
+#include "skl/linear_model/linear_regression/skl_linear_regression.h"
 
 int main(){
     
     // get linear regression estimator
-    linear_regression* reg = get_linear_regression();
+    skl_linear_regression* reg = skl_get_linear_regression();
     
     // declare training data array size
     int r = 4;
