@@ -22,11 +22,9 @@ int main(){
     int r = 4;
     int c = 4;
     
-    // get arrays for training data
     array* x = get_array(r,c);
     array* y = get_array(r,c);
   
-  	// fill training data (example)
     int count = 0;
     for (int i = 0; i < r; i++){
         for (int j = 0; j < c; j++){
