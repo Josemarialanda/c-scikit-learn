@@ -13,5 +13,4 @@ in pkgs.mkShell {
   NIX_LDFLAGS = [
     "-l${py3.libPrefix}"
      ];
-  shellHook = ''make'';
 }
