@@ -59,6 +59,17 @@ arr[2]: 17.000000 19.000000 21.000000 23.000000
 arr[3]: 25.000000 27.000000 29.000000 31.000000
 ```
 
+# Dependencies
+
+The project was built with:
+
+* GNU Make 4.3
+* GCC 10.3.0
+* Nix 2.3
+* Python 3.9.6
+* Scikit-learn 1.0.1
+* Numpy 1.21.4
+
 # Installation Instructions
 
 Note: building this repository with `nix` requires version 2.3 or newer. Check your nix version with `nix --version` in a terminal.
