@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "linear_regression.h"
+#include "skl_linear_regression.h"
 
-static void fit(linear_regression* m, array* x, array* y){
+static void fit(skl_linear_regression* m, array* x, array* y){
 
 	// converts array arguments to Python objects
 	PyObject* PY_x = PyObject_from_double_array(x);
@@ -65,7 +65,7 @@ static void fit(linear_regression* m, array* x, array* y){
 	Py_DECREF(fitted_estimator);
 }
 
-static void get_params(linear_regression* m){
+static void get_params(skl_linear_regression* m){
 
 	PyObject* params = call_method(m->self, "get_params", NULL, NULL);
 	if (params == NULL) {
@@ -75,7 +75,7 @@ static void get_params(linear_regression* m){
 	Py_DECREF(params);
 }
 
-static array* predict(linear_regression* m, array* x){
+static array* predict(skl_linear_regression* m, array* x){
 
 	// converts array arguments to Python objects
 	PyObject* PY_x = PyObject_from_double_array(x);
@@ -109,7 +109,7 @@ static array* predict(linear_regression* m, array* x){
 }
 
 // NOTE: doesn't support sample_weight
-static double score(linear_regression* m, array* x, array* y){
+static double score(skl_linear_regression* m, array* x, array* y){
 
 	// converts array arguments to Python objects
 	PyObject* PY_x = PyObject_from_double_array(x);
@@ -139,7 +139,7 @@ static double score(linear_regression* m, array* x, array* y){
 	return score_c;
 }
 
-static void set_params(linear_regression* m){
+static void set_params(skl_linear_regression* m){
 	
 	// create Python dictionary of parameters
 	PyObject *kwargs = PyDict_New();
@@ -160,40 +160,40 @@ static void set_params(linear_regression* m){
 	Py_DECREF(res);
 }
 
-static void purge(linear_regression* m){
+static void purge(skl_linear_regression* m){
 
 	// decreases reference count of LinearRegression Python instance
 	Py_DECREF(m->self);
 	
-	// frees memory of linear_regression struct
+	// frees memory of skl_linear_regression struct
 	free(m);
 	
 	// finalizes Python interpreter
 	finalize_python();
 }
 
-static void get_parameter_defaults(linear_regression* m){	
+static void get_parameter_defaults(skl_linear_regression* m){	
     m->parameters.fit_intercept = 1;
     m->parameters.copy_X		= 1;
     m->parameters.n_jobs		= 1;
     m->parameters.positive      = 0;
 }
 
-linear_regression* get_linear_regression(){
+skl_linear_regression* skl_get_linear_regression(){
 
 	// initialize Python interpreter
 	initialize_python();
 	
-	// allocate memory for linear_regression struct
-	linear_regression* m = malloc(sizeof(linear_regression));
+	// allocate memory for skl_linear_regression struct
+	skl_linear_regression* m = malloc(sizeof(skl_linear_regression));
 	
 	// get Python instance of LinearRegression class from scikit-learn
 	m->self = get_class_instance("sklearn.linear_model","LinearRegression", NULL);
 	
-	// get default parameters for linear_regression
+	// get default parameters for skl_linear_regression
   	get_parameter_defaults(m);
   	
-  	// setup function pointers for linear_regression
+  	// setup function pointers for skl_linear_regression
   	m->fit 				 = &fit;
   	m->get_params 	     = &get_params;
   	m->predict 		     = &predict;

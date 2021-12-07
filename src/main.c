@@ -1,8 +1,8 @@
-#include "skl/linear_model/linear_regression/linear_regression.h"
+#include "skl/linear_model/linear_regression/skl_linear_regression.h"
 
 int main(){
     
-    linear_regression* reg = get_linear_regression();
+    skl_linear_regression* reg = skl_get_linear_regression();
     
     int r = 4;
     int c = 4;
