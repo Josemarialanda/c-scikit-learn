@@ -15,6 +15,8 @@ typedef struct array{
   double** x;
 } array;
 
+void print_array(array* arr);
+
 // report errors
 void error(char* error);
 
@@ -75,7 +77,7 @@ PyObject* PyObject_from_int_list(int* ns, size_t size);
 // convert a double array to a Python object
 PyObject* PyObject_from_double_list(double* ds, size_t size);
 
-// convert a double matrix to a python object
+// convert an array datatype matrix to a Python object
 PyObject* PyObject_from_double_array(array* arr);
 
 // convert a float array to a Python object
@@ -117,6 +119,9 @@ int boolean_int_from_from_PyObject(PyObject* b);
 
 // convert a PyObject to a PyArrayObject (numpy array)
 PyArrayObject* PyObject_to_PyArrayObject(PyObject* a);
+
+// convert a PyArrayObject to an array struct
+array* PyArrayObject_to_array(PyArrayObject* a);
 
 #endif /* HELPER */
 

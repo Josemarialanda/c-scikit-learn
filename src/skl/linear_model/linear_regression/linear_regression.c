@@ -18,21 +18,26 @@ static void fit(linear_regression* m, array* x, array* y){
 		error("An error ocurred when calling fit with x[] and/or y[]");
 	}
 	Py_DECREF(PY_x); Py_DECREF(PY_y);
-		
-	/*
-	PyObject* coef_ = get_attribute(m->self, "coef_");
-	PyObject* rank_ = get_attribute(m->self, "rank_");
-	PyObject* singular_ = get_attribute(m->self, "singular_");
-	PyObject* intercept_ = get_attribute(m->self, "intercept_");
-	PyObject* n_features_in_ = get_attribute(m->self, "n_features_in_");
-
-	PyObject* feature_names_in_;
-	if (PyObject_HasAttrString(m->self, "feature_names_in_")){
-		feature_names_in_ = get_attribute(m->self, "feature_names_in_");
-	}
-	*/
 	
-	// parse attributes and fill attributes struct
+	PyArrayObject* coef_ = PyObject_to_PyArrayObject(get_attribute(m->self, "coef_"));
+	PyObject* rank_ = get_attribute(m->self, "rank_");
+	PyArrayObject* singular_ = PyObject_to_PyArrayObject(get_attribute(m->self, "singular_"));
+	PyArrayObject* intercept_ = PyObject_to_PyArrayObject(get_attribute(m->self, "intercept_"));
+	PyObject* n_features_in_ = get_attribute(m->self, "n_features_in_");
+	PyArrayObject* feature_names_in_ = PyObject_to_PyArrayObject(get_attribute(m->self, "feature_names_in_"));
+	
+	// always defined
+	m->attributes.coef_ = PyArrayObject_to_array(coef_);
+	m->attributes.intercept_ = PyArrayObject_to_array(intercept_);
+	m->attributes.n_features_in_ = int_from_PyObject(n_features_in_);
+	
+	m->attributes.rank_ = -1;
+	m->attributes.singular_ = NULL;
+	m->attributes.feature_names_in_ = NULL;
+	
+	if (rank_ != NULL) { m->attributes.rank_ = int_from_PyObject(rank_); } // only available when X is dense
+	if (singular_ != NULL) { m->attributes.singular_ = PyArrayObject_to_array(singular_); } // only available when X is dense
+	if (feature_names_in_ != NULL) { m->attributes.feature_names_in_ = PyArrayObject_to_array(feature_names_in_); } // defined only when X has feature names that are all strings
 	
 	Py_DECREF(fitted_estimator);
 }
@@ -59,16 +64,16 @@ static array* predict(linear_regression* m, array* x){
 	}
 	
 	Py_DECREF(args);
-	
-	// parse and return prediction
 
 	if (!PyArray_Check(prediction)) {error("Not an array");}
 	PyArrayObject* numpy_array = PyObject_to_PyArrayObject(prediction);
-	reprint(numpy_array);		
-
-	Py_DECREF(prediction);
 	
-	return NULL;
+	array* arr = PyArrayObject_to_array(numpy_array);
+	
+	Py_DECREF(prediction);
+	Py_DECREF(numpy_array);
+	
+	return arr;
 }
 
 // NOTE: doesn't support sample_weight

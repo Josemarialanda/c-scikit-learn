@@ -14,12 +14,12 @@ struct linear_regression {
 		int positive;	
 	} parameters;
 	struct {
-		double** coef_;
+		array* coef_;
 		int      rank_;
-		double*  singular_;
-		double*  intercept_;
+		array*  singular_;
+		array*  intercept_;
 		int      n_features_in_;
-		double*  feature_names_in_;
+		array*  feature_names_in_;
 	} attributes;
 	// methods
  	void (*fit)(linear_regression* m, array* x, array* y);

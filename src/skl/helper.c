@@ -1,5 +1,18 @@
 #include "helper.h"
 
+void print_array(array* arr){
+	int r = arr->r;
+	int c = arr->c;
+	double** x = arr->x;
+	for (int i = 0; i < r; ++i){
+		printf("arr[%i]: ",i);
+		for (int j = 0; j < c; ++j) {
+			printf("%lf ", x[i][j]);
+		}
+		printf("\n");
+	}
+}
+
 void error(char* error){
 	printf("%s\n", error);
 	exit(1);
@@ -88,8 +101,12 @@ PyObject* call_method(PyObject* class_instance, char* method_name, PyObject* arg
 	return return_value;
 }
 
-PyObject* get_attribute(PyObject* class_instance, char* attribute_name){
-	PyObject* attribute = PyObject_GetAttrString(class_instance, attribute_name);
+PyObject* get_attribute(PyObject* class_instance, char* attribute_name){ 
+	PyObject* attribute;
+	if (!PyObject_HasAttrString(class_instance, attribute_name)){
+		return NULL;
+	}
+	attribute = PyObject_GetAttrString(class_instance, attribute_name);
 	return attribute;
 }
 
@@ -235,6 +252,22 @@ int boolean_int_from_from_PyObject(PyObject* b){
 PyArrayObject* PyObject_to_PyArrayObject(PyObject* a){
 	PyArrayObject* numpy_array = (PyArrayObject*) a;
 	return numpy_array;
+}
+
+array* PyArrayObject_to_array(PyArrayObject* a){
+    // int        ndim     = PyArray_NDIM(a);
+    npy_intp   r        = PyArray_DIMS(a)[0];
+    npy_intp   c        = PyArray_DIMS(a)[1];
+    // int        typenum  = PyArray_TYPE(a);
+ 
+	array* arr = get_array(r,c);
+	
+	for (int i = 0; i < r; ++i){
+		for (int j = 0; j < c; ++j) {
+			arr->x[i][j] = *(double*)PyArray_GetPtr(a, (npy_intp[]){i, j} );
+		}
+	}
+	return arr;
 }
 
 
