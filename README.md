@@ -17,10 +17,8 @@ Toy example of a linear regression model ([full code](https://github.com/Josemar
 
 int main(){
     
-    // get linear regression estimator
     linear_regression* reg = get_linear_regression();
     
-    // declare training data size
     int r = 4;
     int c = 4;
     
@@ -28,7 +26,7 @@ int main(){
     array* x = get_array(r,c);
     array* y = get_array(r,c);
   
-  	// fill training data
+  	// fill training data (example)
     int count = 0;
     for (int i = 0; i < r; i++){
         for (int j = 0; j < c; j++){
@@ -37,56 +35,30 @@ int main(){
         }
     }
             
-    // fit with training data
     reg->fit(reg, x, y);
     
-    // print some attributes after calling fit with (x,y)
-	array* coef_ = reg->attributes.coef_;
-	int    rank_ = reg->attributes.rank_;
-	array* singular_ = reg->attributes.singular_;
-	array* intercept_ = reg->attributes.intercept_;
-	int    n_features_in_ = reg->attributes.n_features_in_;
-	array* feature_names_in_ = reg->attributes.feature_names_in_;
-	
-	printf("Atributes:\n\n");
-	
-	printf("\tcoef_:\n");
-	print_array(coef_);
-	printf("\n\n");
-	
-	printf("\trank_:%i",rank_);
-	printf("\n\n");
-
-	printf("\tsingular_:\n");
-	print_array(singular_);
-	printf("\n\n");
-	
-	printf("\tintercept_:\n");
-	print_array(intercept_);
-	printf("\n\n");
-	
-	printf("\tn_features_in_:%i",n_features_in_);
-	printf("\n\n");
-    
-    // score with training data
-    double score = reg->score(reg, x, y);
-    printf("Score: %f\n", score);
-    
-    // predict with testing data
     array* prediction = reg->predict(reg, x);
+    
     printf("Prediction:\n");
     print_array(prediction);
    
-    // free memory for created arrays
     free_array(x);
     free_array(y);
-    free_array(prediction);
-        
-    // free memory for linear_regression
+    free_array(prediction); 
     reg->purge(reg);
     
     return 0;
 }
+```
+
+```
+./out
+
+Prediction:
+arr[0]: 1.000000 3.000000 5.000000 7.000000
+arr[1]: 9.000000 11.000000 13.000000 15.000000
+arr[2]: 17.000000 19.000000 21.000000 23.000000
+arr[3]: 25.000000 27.000000 29.000000 31.000000
 ```
 
 # Installation Instructions
