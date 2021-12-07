@@ -21,6 +21,9 @@ int main(){
             y->x[i][j] = ++count+10;
         }
     }
+    
+    // change some parameters
+    reg->set_params(reg);
             
     // fit with training data
     reg->fit(reg, x, y);
@@ -61,14 +64,15 @@ int main(){
     
     // predict with testing data
     array* prediction = reg->predict(reg, x);
+    
     printf("Prediction:\n");
     print_array(prediction);
    
     // free memory for arrays
     free_array(x);
     free_array(y);
-    free_array(prediction);
-        
+    free_array(prediction); 
+              
     // free memory for linear_regression
     reg->purge(reg);
     

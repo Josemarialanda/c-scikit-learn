@@ -15,9 +15,10 @@ typedef struct array{
   double** x;
 } array;
 
+// pretty prints an array
 void print_array(array* arr);
 
-// report errors
+// basic report errors
 void error(char* error);
 
 // Gets a pointer to an array struct

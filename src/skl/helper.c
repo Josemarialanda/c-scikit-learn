@@ -13,6 +13,7 @@ void print_array(array* arr){
 	}
 }
 
+// TODO: Improve error messages
 void error(char* error){
 	printf("%s\n", error);
 	exit(1);
@@ -38,49 +39,73 @@ void free_array(array* arr){
 }
 
 void initialize_python(){
-	push_instance();
+	// check if instance stack is full
 	if (is_instance_stack_full()){
 		error("Python instance stack is full");
 	}
-	Py_Initialize();
+	
+	// an instance is a model object from scikit-learn
+	push_instance();
+	
+	// if Python interpreter is initialized just skip to numpy initalization
+	if (!Py_IsInitialized()){
+		Py_Initialize();	
+	}
+	
+	// import numpy if not already imported
 	if(PyArray_API == NULL){
     	import_array(); 
 	}
 }
 
 void finalize_python(){
+
+	// an instance is a model object from scikit-learn
 	pop_instance();
+	
+	// if there are no more instances in stack, finalize Python interpreter
 	if (is_instance_stack_empty()){
 		Py_Finalize();	
 	}
 }
 
 PyObject* get_module(char* module_name){
-	return PyImport_ImportModule(module_name);;
+	// increases reference -> requires call to PY_DECREF()
+	// might return NULL, in that case the refrence count is not increased
+	return PyImport_ImportModule(module_name);
 }
 
 PyObject* get_class(PyObject* module, char* class_name){
+	// increases reference -> requires call to PY_DECREF()
+	// might return NULL, in that case the refrence count is not increased
 	return PyObject_GetAttrString(module, class_name);
 }
 
 PyObject* get_class_instance(char* module_name, char* class_name, PyObject* args){
 	PyObject* module = get_module(module_name);
 	if (module == NULL) {
-		Py_DECREF(module);
+		// no need to decrease reference count on PyObject* module
 		error("Can't find module");
 	}
 	PyObject* class  = get_class(module, class_name);
 	Py_DECREF(module);
 	if (class == NULL) {
-		Py_DECREF(class);
+		// no need to decrease reference count on PyObject* class
 		error("Can't find class");
 	}
 	PyObject* class_instance = PyObject_CallObject(class, args);
+	// decrease reference count on PyObject* args (could be NULL)
+	Py_XDECREF(args);
+	// decrease reference count on PyObject* class
 	Py_DECREF(class);
 	return class_instance;
 }
 
 PyObject* call_method(PyObject* class_instance, char* method_name, PyObject* args , PyObject* kwargs){
+
+	// note we don't call PY_DECREF() on class_instance,
+	// reference count of class_instance is managed by 
+	// the model code
 
 	if (args == NULL){
 		PyObject *tuple = PyTuple_New(0);
@@ -89,19 +114,27 @@ PyObject* call_method(PyObject* class_instance, char* method_name, PyObject* arg
 
 	PyObject* method = PyObject_GetAttrString(class_instance, method_name);
 	if (method == NULL) {
-		Py_DECREF(method);
 		error("Can't find method");
 	}
+	
 	PyObject* return_value = PyObject_Call(method, args, kwargs);
 	Py_DECREF(method);
 	if (return_value == NULL) {
-		Py_DECREF(return_value);
 		error("Incorrect method call");
 	}
+	// decrease reference count on PyObject* args
+	Py_DECREF(args);
+	// decrease reference count on PyObject* kwargs (could be NULL)
+	Py_XDECREF(kwargs);
 	return return_value;
 }
 
 PyObject* get_attribute(PyObject* class_instance, char* attribute_name){ 
+
+	// note we don't call Py_DECREF() on class_instance,
+	// reference count of class_instance is managed by 
+	// the model code
+
 	PyObject* attribute;
 	if (!PyObject_HasAttrString(class_instance, attribute_name)){
 		return NULL;
@@ -110,7 +143,6 @@ PyObject* get_attribute(PyObject* class_instance, char* attribute_name){
 	return attribute;
 }
 
-// not sure if I should call Py_DECREF somewhere ??? 
 PyObject* build_arguments(int arg_count, ...){
 	PyObject *tuple_args = PyTuple_New(arg_count);
 	va_list args;
@@ -118,14 +150,15 @@ PyObject* build_arguments(int arg_count, ...){
     for (int i = 0; i < arg_count; i++){
       PyObject* arg = va_arg(args, PyObject*);
       PyTuple_SET_ITEM(tuple_args, i, arg);
+      // PyTuple_SET_ITEM steals a reference to arg
+      // thus, there is no need to call Py_DECREF(arg);
     }
     va_end(args);
-    // return Py_BuildValue("O", tuple_args);
     return tuple_args;
 }
 
-
 void reprint(PyObject *obj) {
+	// doesnt't manage references to obj
     PyObject* repr = PyObject_Repr(obj);
     PyObject* str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
     const char *bytes = PyBytes_AS_STRING(str);
@@ -157,6 +190,8 @@ PyObject* PyObject_from_int_list(int* ns, size_t size){
 	for(int i=0; i<size;i++){
 		PyObject* n = PyObject_from_int(ns[i]);
 		PyList_SetItem(list, i, n);
+        // PyList_SetItem steals a reference to n
+        // thus, there is no need to call Py_DECREF(n);
 	}
 	return list;
 }
@@ -166,6 +201,8 @@ PyObject* PyObject_from_double_list(double* ds, size_t size){
 	for(int i=0; i<size;i++){
 		PyObject* d = PyObject_from_double(ds[i]);
 		PyList_SetItem(list, i, d);
+        // PyList_SetItem steals a reference to d
+        // thus, there is no need to call Py_DECREF(d);
 	}
 	return list;
 }
@@ -175,6 +212,8 @@ PyObject* PyObject_from_double_array(array* arr){
 	for (int i=0; i < arr->r; i++){
 	  	PyObject* list_i = PyObject_from_double_list(arr->x[i], arr->c);
 	  	PyList_SetItem(list, i, list_i);
+        // PyList_SetItem steals a reference to i
+        // thus, there is no need to call Py_DECREF(i);
 	}
 	return list;
 }
@@ -184,6 +223,8 @@ PyObject* PyObject_from_float_list(float* fs, size_t size){
 	for(int i=0; i<size;i++){
 		PyObject* f = PyObject_from_float(fs[i]);
 		PyList_SetItem(list, i, f);
+        // PyList_SetItem steals a reference to f
+        // thus, there is no need to call Py_DECREF(f);
 	}
 	return list;
 }
@@ -221,6 +262,8 @@ int* int_list_from_PyObject(PyObject* p_ns){
 	int size = PyList_Size(p_ns);
 	int* ns = malloc(sizeof(int)*size);
 	for(int i=0; i<size;i++){
+        // PyList_GetItem steals a reference to p_ns
+        // thus, there is no need to call Py_DECREF(p_ns);
 		ns[i] = int_from_PyObject(PyList_GetItem(p_ns, i));
 	}
 	return ns;
@@ -230,6 +273,8 @@ double* double_list_from_PyObject(PyObject* p_ds){
 	int size = PyList_Size(p_ds);
 	double* ds = malloc(sizeof(double)*size);
 	for(int i=0; i<size;i++){
+        // PyList_GetItem steals a reference to p_ds
+        // thus, there is no need to call Py_DECREF(p_ds);
 		ds[i] = double_from_PyObject(PyList_GetItem(p_ds, i));
 	}
 	return ds;
@@ -239,7 +284,10 @@ float* float_list_from_PyObject(PyObject* p_fs){
 	int size = PyList_Size(p_fs);
 	float* fs = malloc(sizeof(float)*size);
 	for(int i=0; i<size;i++){
+        // PyList_GetItem steals a reference to p_fs
+        // thus, there is no need to call Py_DECREF(p_fs);
 		fs[i] = float_from_PyObject(PyList_GetItem(p_fs, i));
+		
 	}
 	return fs;
 }

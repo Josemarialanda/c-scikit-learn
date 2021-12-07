@@ -89,14 +89,20 @@ int main(){
 
 # Installation Instructions
 
-Note: building this repository with `nix` requires version 2.3 or newer. Check your stack version with `nix --version` in a terminal.
+Note: building this repository with `nix` requires version 2.3 or newer. Check your nix version with `nix --version` in a terminal.
 
 # Build on NixOS
 
-The `shell.nix` provides an environment containing the necessary dependencies. To build, run:
+The `shell.nix` provides an environment containing the necessary dependencies. To enter the build environment, run:
 
 ```
 $ nix-shell
+```
+
+To build, run (from within the shell):
+
+```
+$ make
 ```
 
 This will enter the environment and build the project. Note, that it is an emulation of a common Linux
@@ -104,4 +110,3 @@ environment rather than the full-featured Nix package expression. No exportable 
 but local development is possible.
 
 # Build with Docker on Linux
-

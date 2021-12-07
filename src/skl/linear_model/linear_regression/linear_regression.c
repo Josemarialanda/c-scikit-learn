@@ -4,21 +4,31 @@
 #include "linear_regression.h"
 
 static void fit(linear_regression* m, array* x, array* y){
+
+	// converts array arguments to Python objects
 	PyObject* PY_x = PyObject_from_double_array(x);
 	PyObject* PY_y = PyObject_from_double_array(x);
 	
+	// build arguments for fit with PY_x and PY_y
 	PyObject* args = build_arguments(2, PY_x, PY_y);
+	
+	// call fit with PyObject* args and NULL kwargs
+	// note: no need to call Py_DECREF(args) or Py_DECREF(kwargs)
+	// call_method() takes care of those references
 	
 	PyObject* fitted_estimator = call_method(m->self, "fit", args, NULL);
 	
-	Py_DECREF(args);
-	
 	if (fitted_estimator == NULL) {
-		Py_DECREF(fitted_estimator);
 		error("An error ocurred when calling fit with x[] and/or y[]");
 	}
-	Py_DECREF(PY_x); Py_DECREF(PY_y);
 	
+	// note: there is no need to decrease reference count of PY_x,PY_y
+	// since build_arguments steals the reference from PY_x,PY_y
+	// thus and when we call call_method(), we do Py_DECREF(args),
+	// which also decreases the reference count for PY_x,PY_y
+	
+	// fetch attributes from class_instance
+	// note: some attributes could return NULL if not defined for certain dataset
 	PyArrayObject* coef_ = PyObject_to_PyArrayObject(get_attribute(m->self, "coef_"));
 	PyObject* rank_ = get_attribute(m->self, "rank_");
 	PyArrayObject* singular_ = PyObject_to_PyArrayObject(get_attribute(m->self, "singular_"));
@@ -26,26 +36,39 @@ static void fit(linear_regression* m, array* x, array* y){
 	PyObject* n_features_in_ = get_attribute(m->self, "n_features_in_");
 	PyArrayObject* feature_names_in_ = PyObject_to_PyArrayObject(get_attribute(m->self, "feature_names_in_"));
 	
+	// fill attributes struct
+	
 	// always defined
 	m->attributes.coef_ = PyArrayObject_to_array(coef_);
 	m->attributes.intercept_ = PyArrayObject_to_array(intercept_);
 	m->attributes.n_features_in_ = int_from_PyObject(n_features_in_);
 	
+	// may be NULL
 	m->attributes.rank_ = -1;
 	m->attributes.singular_ = NULL;
 	m->attributes.feature_names_in_ = NULL;
 	
-	if (rank_ != NULL) { m->attributes.rank_ = int_from_PyObject(rank_); } // only available when X is dense
-	if (singular_ != NULL) { m->attributes.singular_ = PyArrayObject_to_array(singular_); } // only available when X is dense
-	if (feature_names_in_ != NULL) { m->attributes.feature_names_in_ = PyArrayObject_to_array(feature_names_in_); } // defined only when X has feature names that are all strings
+	// only available when X is dense
+	if (rank_ != NULL) { m->attributes.rank_ = int_from_PyObject(rank_); }
+	// only available when X is dense
+	if (singular_ != NULL) { m->attributes.singular_ = PyArrayObject_to_array(singular_); }
+	// defined only when X has feature names that are all strings
+	if (feature_names_in_ != NULL) { m->attributes.feature_names_in_ = PyArrayObject_to_array(feature_names_in_); }
+	
+	Py_DECREF(coef_);
+	Py_DECREF(intercept_);
+	Py_DECREF(n_features_in_);
+	Py_XDECREF(rank_);
+	Py_XDECREF(singular_);
+	Py_XDECREF(feature_names_in_);
 	
 	Py_DECREF(fitted_estimator);
 }
 
 static void get_params(linear_regression* m){
+
 	PyObject* params = call_method(m->self, "get_params", NULL, NULL);
 	if (params == NULL) {
-		Py_DECREF(params);
 		error("An error ocurred with scikitlearn!");
 	}
 	reprint(params);
@@ -53,17 +76,25 @@ static void get_params(linear_regression* m){
 }
 
 static array* predict(linear_regression* m, array* x){
+
+	// converts array arguments to Python objects
 	PyObject* PY_x = PyObject_from_double_array(x);
 
+	// build arguments for predict with PY_x
 	PyObject* args = build_arguments(1, PY_x);
 
+	// call predict with PyObject* args and NULL kwargs
+	// note: no need to call Py_DECREF(args) or Py_DECREF(kwargs)
+	// call_method() takes care of those references
 	PyObject* prediction = call_method(m->self, "predict", args, NULL);
 	if (prediction == NULL) {
-		Py_DECREF(prediction);
 		error("An error ocurred when calling predict with x[]");
 	}
 	
-	Py_DECREF(args);
+	// note: there is no need to decrease reference count of PY_x
+	// since build_arguments steals the reference from PY_x
+	// thus and when we call call_method(), we do Py_DECREF(args),
+	// which also decreases the reference count for PY_x
 
 	if (!PyArray_Check(prediction)) {error("Not an array");}
 	PyArrayObject* numpy_array = PyObject_to_PyArrayObject(prediction);
@@ -71,45 +102,73 @@ static array* predict(linear_regression* m, array* x){
 	array* arr = PyArrayObject_to_array(numpy_array);
 	
 	Py_DECREF(prediction);
-	Py_DECREF(numpy_array);
+	// no need to Py_DECREF(numpy_array), since numpy_array is the same
+	// pointer, just cast to a PyArrayObject
 	
 	return arr;
 }
 
 // NOTE: doesn't support sample_weight
 static double score(linear_regression* m, array* x, array* y){
+
+	// converts array arguments to Python objects
 	PyObject* PY_x = PyObject_from_double_array(x);
 	PyObject* PY_y = PyObject_from_double_array(y);
+	
+	// build arguments for score with PY_x and PY_y
 	PyObject* args = build_arguments(2, PY_x, PY_y);
+	
+	// call score with PyObject* args and NULL kwargs
+	// note: no need to call Py_DECREF(args) or Py_DECREF(kwargs)
+	// call_method() takes care of those references
 	PyObject* score = call_method(m->self, "score", args, NULL);
+	
 	if (score == NULL) {
-		Py_DECREF(score);
 		error("An error ocurred when calling score with x[] and/or y[]");
 	}
-	Py_DECREF(args);
+	
+	// note: there is no need to decrease reference count of PY_x,PY_y
+	// since build_arguments steals the reference from PY_x,PY_y
+	// thus and when we call call_method(), we do Py_DECREF(args),
+	// which also decreases the reference count for PY_x,PY_y
+	
 	double score_c = double_from_PyObject(score);
+	
 	Py_DECREF(score);
+	
 	return score_c;
 }
 
 static void set_params(linear_regression* m){
-	PyObject *params = PyDict_New();
-	PyDict_SetItem(params, PyUnicode_FromString("copy_X"), PyObject_from_boolean_int(m->parameters.copy_X));
-    PyDict_SetItem(params, PyUnicode_FromString("fit_intercept"), PyObject_from_boolean_int(m->parameters.fit_intercept));
-    PyDict_SetItem(params, PyUnicode_FromString("n_jobs"), PyObject_from_int(m->parameters.n_jobs));
-    PyDict_SetItem(params, PyUnicode_FromString("positive"), PyObject_from_boolean_int(m->parameters.positive)); 
-    PyObject *res = call_method(m->self, "set_params", NULL, params);
+	
+	// create Python dictionary of parameters
+	PyObject *kwargs = PyDict_New();
+	PyDict_SetItem(kwargs, PyUnicode_FromString("copy_X"), PyObject_from_boolean_int(m->parameters.copy_X));
+    PyDict_SetItem(kwargs, PyUnicode_FromString("fit_intercept"), PyObject_from_boolean_int(m->parameters.fit_intercept));
+    PyDict_SetItem(kwargs, PyUnicode_FromString("n_jobs"), PyObject_from_int(m->parameters.n_jobs));
+    PyDict_SetItem(kwargs, PyUnicode_FromString("positive"), PyObject_from_boolean_int(m->parameters.positive)); 
+    
+	// call set_params with NULL args and kwargs
+	// note: no need to call Py_DECREF(args) or Py_DECREF(kwargs)
+	// call_method() takes care of those references
+    PyObject *res = call_method(m->self, "set_params", NULL, kwargs);
+    
 	if (res == NULL) {
-		Py_DECREF(res);
 		error("An error ocurred while calling set_params!");
 	}
+	
 	Py_DECREF(res);
-    Py_DECREF(params);
 }
 
 static void purge(linear_regression* m){
+
+	// decreases reference count of LinearRegression Python instance
 	Py_DECREF(m->self);
+	
+	// frees memory of linear_regression struct
 	free(m);
+	
+	// finalizes Python interpreter
 	finalize_python();
 }
 
@@ -121,10 +180,20 @@ static void get_parameter_defaults(linear_regression* m){
 }
 
 linear_regression* get_linear_regression(){
+
+	// initialize Python interpreter
 	initialize_python();
+	
+	// allocate memory for linear_regression struct
 	linear_regression* m = malloc(sizeof(linear_regression));
+	
+	// get Python instance of LinearRegression class from scikit-learn
 	m->self = get_class_instance("sklearn.linear_model","LinearRegression", NULL);
+	
+	// get default parameters for linear_regression
   	get_parameter_defaults(m);
+  	
+  	// setup function pointers for linear_regression
   	m->fit 				 = &fit;
   	m->get_params 	     = &get_params;
   	m->predict 		     = &predict;
