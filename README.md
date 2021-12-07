@@ -6,6 +6,8 @@ This project is independent from [scikit-learn](https://scikit-learn.org/stable/
 
 # Documentation
 
+[Go to documentation](https://github.com/Josemarialanda/C-wrapper-scikitlearn/blob/master/DOCUMENTATION.md).
+
 # Examples
 
 Toy example of a linear regression model ([full code](https://github.com/Josemarialanda/C-wrapper-scikitlearn/blob/master/examples/main.c))
