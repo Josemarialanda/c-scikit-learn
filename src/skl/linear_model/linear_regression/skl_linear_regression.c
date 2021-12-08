@@ -7,7 +7,7 @@ static void fit(skl_linear_regression* m, array* x, array* y){
 
 	// converts array arguments to Python objects
 	PyObject* PY_x = PyObject_from_double_array(x);
-	PyObject* PY_y = PyObject_from_double_array(x);
+	PyObject* PY_y = PyObject_from_double_array(y);
 	
 	// build arguments for fit with PY_x and PY_y
 	PyObject* args = build_arguments(2, PY_x, PY_y);
@@ -35,7 +35,7 @@ static void fit(skl_linear_regression* m, array* x, array* y){
 	PyArrayObject* intercept_ = PyObject_to_PyArrayObject(get_attribute(m->self, "intercept_"));
 	PyObject* n_features_in_ = get_attribute(m->self, "n_features_in_");
 	PyArrayObject* feature_names_in_ = PyObject_to_PyArrayObject(get_attribute(m->self, "feature_names_in_"));
-	
+
 	// fill attributes struct
 	
 	// always defined
@@ -108,7 +108,6 @@ static array* predict(skl_linear_regression* m, array* x){
 	return arr;
 }
 
-// NOTE: doesn't support sample_weight
 static float score(skl_linear_regression* m, array* x, array* y){
 
 	// converts array arguments to Python objects

@@ -24,10 +24,17 @@ array* get_array(int rows, int cols){
     for (int i = 0; i < rows; i++){
         x[i] = (double*)malloc((cols)*sizeof(double));
     }
+    
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < cols; j++){
+            x[i][j] = 0;
+        }
+    }
+    
     array* arr = malloc(sizeof(array));
     arr->r = rows;
     arr->c = cols;
-    arr->x = x;
+    arr->x = x;  
     return arr;
 }
 
@@ -303,16 +310,21 @@ PyArrayObject* PyObject_to_PyArrayObject(PyObject* a){
 }
 
 array* PyArrayObject_to_array(PyArrayObject* a){
-    // int        ndim     = PyArray_NDIM(a);
-    npy_intp   r        = PyArray_DIMS(a)[0];
-    npy_intp   c        = PyArray_DIMS(a)[1];
+    int        r = PyArray_NDIM(a);
+    npy_intp   c = PyArray_DIMS(a)[0];
     // int        typenum  = PyArray_TYPE(a);
  
 	array* arr = get_array(r,c);
 	
-	for (int i = 0; i < r; ++i){
-		for (int j = 0; j < c; ++j) {
-			arr->x[i][j] = *(double*)PyArray_GetPtr(a, (npy_intp[]){i, j} );
+	if (r == 2){
+		for (int i = 0; i < r; ++i){
+			for (int j = 0; j < c; ++j) {
+				arr->x[i][j] = *(double*)PyArray_GetPtr(a, (npy_intp[]){i, j} );
+			}
+		}
+	} else {
+		for (int i = 0; i < c; ++i) {
+			arr->x[0][i] = *(double*)PyArray_GetPtr(a, (npy_intp[]){i} );
 		}
 	}
 	return arr;

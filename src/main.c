@@ -15,20 +15,31 @@ array* fetch_data(int r, int c, int seed){
 
 int main(){
     
+    /*
     array* x = fetch_data(4,4, 25);
     array* y = fetch_data(4,4, 18);
   
     skl_linear_regression* reg = skl_get_linear_regression();
     reg->fit(reg, x, y);
-    printf("Score: %f", reg->score(reg, x, y));
+    
+    print_array(reg->attributes.singular_);
+   
+    free_array(x);
+    free_array(y);
+    
+    reg->purge(reg);
+    */
+
+    array* x = fetch_data(4,4, 25);
+    array* y = fetch_data(1,4, 18);
     
     skl_svr* svr = skl_get_svr();
+    svr->fit(svr, x, y);
    
     free_array(x);
     free_array(y);
     
     svr->purge(svr);
-    reg->purge(reg);
-    
+	
     return 0;
 }
