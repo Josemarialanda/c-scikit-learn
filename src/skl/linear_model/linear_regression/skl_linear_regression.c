@@ -35,7 +35,7 @@ static void fit(skl_linear_regression* m, array* x, array* y){
 	PyArrayObject* intercept_ = PyObject_to_PyArrayObject(get_attribute(m->self, "intercept_"));
 	PyObject* n_features_in_ = get_attribute(m->self, "n_features_in_");
 	PyArrayObject* feature_names_in_ = PyObject_to_PyArrayObject(get_attribute(m->self, "feature_names_in_"));
-
+	
 	// fill attributes struct
 	
 	// always defined
@@ -166,9 +166,6 @@ static void purge(skl_linear_regression* m){
 	
 	// frees memory of skl_linear_regression struct
 	free(m);
-	
-	// finalizes Python interpreter
-	finalize_python();
 }
 
 static void get_parameter_defaults(skl_linear_regression* m){	
@@ -179,9 +176,6 @@ static void get_parameter_defaults(skl_linear_regression* m){
 }
 
 skl_linear_regression* skl_get_linear_regression(){
-
-	// initialize Python interpreter
-	initialize_python();
 	
 	// allocate memory for skl_linear_regression struct
 	skl_linear_regression* m = malloc(sizeof(skl_linear_regression));

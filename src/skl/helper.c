@@ -45,35 +45,13 @@ void free_array(array* arr){
     free(arr);
 }
 
-void initialize_python(){
-	// check if instance stack is full
-	if (is_instance_stack_full()){
-		error("Python instance stack is full");
-	}
-	
-	// an instance is a model object from scikit-learn
-	push_instance();
-	
-	// if Python interpreter is initialized just skip to numpy initalization
-	if (!Py_IsInitialized()){
-		Py_Initialize();	
-	}
-	
-	// import numpy if not already imported
-	if(PyArray_API == NULL){
-    	import_array(); 
-	}
+void initialize_skl(){
+	Py_Initialize();	
+	if(PyArray_API == NULL){ import_array();}
 }
 
-void finalize_python(){
-
-	// an instance is a model object from scikit-learn
-	pop_instance();
-	
-	// if there are no more instances in stack, finalize Python interpreter
-	if (is_instance_stack_empty()){
-		Py_Finalize();	
-	}
+void finalize_skl(){
+	Py_Finalize();
 }
 
 PyObject* get_module(char* module_name){
@@ -89,6 +67,7 @@ PyObject* get_class(PyObject* module, char* class_name){
 }
 
 PyObject* get_class_instance(char* module_name, char* class_name, PyObject* args){
+
 	PyObject* module = get_module(module_name);
 	if (module == NULL) {
 		// no need to decrease reference count on PyObject* module
@@ -304,27 +283,89 @@ int boolean_int_from_from_PyObject(PyObject* b){
 	return PyObject_IsTrue(b);
 }
 
+array* PyObject_tuple_to_array(PyObject* t){
+    int len = PyTuple_Size(t);
+    array* arr = get_array(1,len);
+    for(int i = 0; i < len; ++i){
+		PyObject* obj = PyTuple_GetItem(t,i);
+		arr->x[0][i] = double_from_PyObject(obj);
+		Py_DECREF(obj);
+	}
+	return arr;
+}
+
 PyArrayObject* PyObject_to_PyArrayObject(PyObject* a){
 	PyArrayObject* numpy_array = (PyArrayObject*) a;
 	return numpy_array;
 }
 
 array* PyArrayObject_to_array(PyArrayObject* a){
-    int        r = PyArray_NDIM(a);
-    npy_intp   c = PyArray_DIMS(a)[0];
-    // int        typenum  = PyArray_TYPE(a);
- 
-	array* arr = get_array(r,c);
-	
-	if (r == 2){
-		for (int i = 0; i < r; ++i){
-			for (int j = 0; j < c; ++j) {
-				arr->x[i][j] = *(double*)PyArray_GetPtr(a, (npy_intp[]){i, j} );
-			}
+	// extract dimensions from numpy array
+    int dims = PyArray_NDIM(a);
+    // declare array struct
+    array* arr;
+	if (dims == 2){
+		// extract rows info from numpy array
+	    npy_intp   r = PyArray_DIMS(a)[0];
+	    // extract columns info from numpy array
+    	npy_intp   c = PyArray_DIMS(a)[1];
+    	// create array with correct dimensions
+    	arr = get_array(r,c);
+    	// extract datatype from numpy array
+    	int typenum  = PyArray_TYPE(a);
+    	// parse array depending on internal datatype
+		switch(typenum) {
+			case NPY_FLOAT:
+				for (int i = 0; i < r; ++i){
+					for (int j = 0; j < c; ++j) {
+						arr->x[i][j] = *(float*)PyArray_GetPtr(a, (npy_intp[]){i, j} );
+					}
+				}
+				break; 
+			case NPY_DOUBLE:
+				for (int i = 0; i < r; ++i){
+					for (int j = 0; j < c; ++j) {
+						arr->x[i][j] = *(double*)PyArray_GetPtr(a, (npy_intp[]){i, j} );
+					}
+				}
+				break;
+			case NPY_INT32:
+				for (int i = 0; i < r; ++i){
+					for (int j = 0; j < c; ++j) {
+						arr->x[i][j] = *(int*)PyArray_GetPtr(a, (npy_intp[]){i, j} );
+					}
+				}
+				break;
+			default:
+				error("unknown datatype");
 		}
+
 	} else {
-		for (int i = 0; i < c; ++i) {
-			arr->x[0][i] = *(double*)PyArray_GetPtr(a, (npy_intp[]){i} );
+		// extract columns info from numpy array
+      	npy_intp   c = PyArray_DIMS(a)[0];
+      	// create array with correct dimensions
+      	arr = get_array(1,c);
+      	// extract datatype from numpy array
+    	int typenum  = PyArray_TYPE(a);
+    	// parse array depending on internal datatype
+		switch(typenum) {
+			case NPY_FLOAT:
+				for (int i = 0; i < c; ++i) {
+					arr->x[0][i] = *(float*)PyArray_GetPtr(a, (npy_intp[]){i} );
+				}
+				break; 
+			case NPY_DOUBLE:
+				for (int i = 0; i < c; ++i) {
+					arr->x[0][i] = *(double*)PyArray_GetPtr(a, (npy_intp[]){i} );
+				}
+				break;
+			case NPY_INT32:
+				for (int i = 0; i < c; ++i) {
+					arr->x[0][i] = *(int*)PyArray_GetPtr(a, (npy_intp[]){i} );
+				}
+				break;
+			default:
+				error("unknown datatype");
 		}
 	}
 	return arr;

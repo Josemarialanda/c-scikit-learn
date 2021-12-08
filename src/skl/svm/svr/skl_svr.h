@@ -37,7 +37,7 @@ struct skl_svr {
  	void (*fit)(skl_svr* m, array* x, array* y);
  	void (*get_params)(skl_svr* m);
  	array* (*predict)(skl_svr* m, array* x);
- 	double (*score)(skl_svr* m, array* x, array* y);
+ 	float (*score)(skl_svr* m, array* x, array* y);
  	void (*set_params)(skl_svr* m);
  	void (*purge)(skl_svr* m);
 };

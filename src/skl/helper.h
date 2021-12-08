@@ -32,11 +32,11 @@ void free_array(array* arr);
 
 // Python-C API helper functions
 
-// initialiize the Python interpreter
-void initialize_python();
+// initialiize the Python interpreter and import numpy
+void initialize_skl();
 
 // finalize the Python interpreter
-void finalize_python();
+void finalize_skl();
 
 // get Python module
 PyObject* get_module(char* module_name);
@@ -100,19 +100,20 @@ double double_from_PyObject(PyObject* p_d);
 // convert Python object to a float
 float float_from_PyObject(PyObject* p_);
 
-// convert Python object to an integer array
+// convert Python int list to an integer array
 int* int_list_from_PyObject(PyObject* p_ns);
 
-// convert Python object to a double array
+// convert Python double list to a double array
 double* double_list_from_PyObject(PyObject* p_ds);
 
-// convert Python object to a float array
+// convert Python float list to a float array
 float* float_list_from_PyObject(PyObject* p_fs);
 
 // convert Python object to an int (boolean)
 int boolean_int_from_from_PyObject(PyObject* b);
 
-
+// convert Python Tuple to array
+array* PyObject_tuple_to_array(PyObject* t);
 
 
 
