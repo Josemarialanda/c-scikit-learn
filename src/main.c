@@ -1,35 +1,33 @@
 #include "skl/linear_model/linear_regression/skl_linear_regression.h"
+#include "skl/svm/svr/skl_svr.h"
 
-int main(){
-    
-    skl_linear_regression* reg = skl_get_linear_regression();
-    
-    int r = 4;
-    int c = 4;
-    
-    // get arrays for training data
+array* fetch_data(int r, int c, int seed){
     array* x = get_array(r,c);
-    array* y = get_array(r,c);
   
-  	// fill training data (example)
     int count = 0;
     for (int i = 0; i < r; i++){
         for (int j = 0; j < c; j++){
-            x->x[i][j] = ++count;
-            y->x[i][j] = ++count+10;
+            x->x[i][j] = ++count; // ++count*seed*(1/25);
         }
     }
-            
+    return x;
+}
+
+int main(){
+    
+    array* x = fetch_data(4,4, 25);
+    array* y = fetch_data(4,4, 18);
+  
+    skl_linear_regression* reg = skl_get_linear_regression();
     reg->fit(reg, x, y);
+    printf("Score: %f", reg->score(reg, x, y));
     
-    array* prediction = reg->predict(reg, x);
-    
-    printf("Prediction:\n");
-    print_array(prediction);
+    skl_svr* svr = skl_get_svr();
    
     free_array(x);
     free_array(y);
-    free_array(prediction); 
+    
+    svr->purge(svr);
     reg->purge(reg);
     
     return 0;
