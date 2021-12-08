@@ -1,3 +1,6 @@
+#ifndef SKL_SVR
+#define SKL_SVR
+
 #define NO_IMPORT_ARRAY
 #include "../../helper.h"
 
@@ -45,15 +48,4 @@ struct skl_svr {
 // get skl_svr model
 skl_svr* skl_get_svr();
 
-
-
-
-
-
-
-
-
-
-
-
-
+#endif /* SKL_SVR */

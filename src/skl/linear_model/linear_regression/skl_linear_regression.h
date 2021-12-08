@@ -1,3 +1,6 @@
+#ifndef SKL_LINEAR_REGRESSION
+#define SKL_LINEAR_REGRESSION
+
 #define NO_IMPORT_ARRAY
 #include "../../helper.h"
 
@@ -33,15 +36,4 @@ struct skl_linear_regression {
 // get skl_linear_regression model
 skl_linear_regression* skl_get_linear_regression();
 
-
-
-
-
-
-
-
-
-
-
-
-
+#endif /* SKL_LINEAR_REGRESSION */
