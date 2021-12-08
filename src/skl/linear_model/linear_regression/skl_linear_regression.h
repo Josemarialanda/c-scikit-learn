@@ -25,7 +25,7 @@ struct skl_linear_regression {
  	void (*fit)(skl_linear_regression* m, array* x, array* y);
  	void (*get_params)(skl_linear_regression* m);
  	array* (*predict)(skl_linear_regression* m, array* x);
- 	double (*score)(skl_linear_regression* m, array* x, array* y);
+ 	float (*score)(skl_linear_regression* m, array* x, array* y);
  	void (*set_params)(skl_linear_regression* m);
  	void (*purge)(skl_linear_regression* m);
 };

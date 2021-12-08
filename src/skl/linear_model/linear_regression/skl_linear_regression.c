@@ -109,7 +109,7 @@ static array* predict(skl_linear_regression* m, array* x){
 }
 
 // NOTE: doesn't support sample_weight
-static double score(skl_linear_regression* m, array* x, array* y){
+static float score(skl_linear_regression* m, array* x, array* y){
 
 	// converts array arguments to Python objects
 	PyObject* PY_x = PyObject_from_double_array(x);
@@ -132,7 +132,7 @@ static double score(skl_linear_regression* m, array* x, array* y){
 	// thus and when we call call_method(), we do Py_DECREF(args),
 	// which also decreases the reference count for PY_x,PY_y
 	
-	double score_c = double_from_PyObject(score);
+	float score_c = float_from_PyObject(score);
 	
 	Py_DECREF(score);
 	
