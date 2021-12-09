@@ -90,4 +90,4 @@ skl_<model_name>* skl_get_<model_name>();
 
 Other than that, the functionality is pretty much the same as in [scikit-learn](https://scikit-learn.org/stable/modules/classes.html#).
 
-For an example, check out [toy linear regression example](https://github.com/Josemarialanda/c-scikit-learn/blob/master/examples/main.c).
+For an example, check out a [toy linear regression example](https://github.com/Josemarialanda/c-scikit-learn/blob/master/test-exe/main.c).

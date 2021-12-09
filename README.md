@@ -10,7 +10,7 @@ This project is independent from [scikit-learn](https://scikit-learn.org/stable/
 
 # Examples
 
-Toy example of a linear regression model ([full code](https://github.com/Josemarialanda/c-scikit-learn/blob/master/test-exe/main.c)
+Toy example of a linear regression model ([full code](https://github.com/Josemarialanda/c-scikit-learn/blob/master/test-exe/main.c))
 
 ```c
 #include <c-skl/linear_model/linear_regression/skl_linear_regression.h>
@@ -91,7 +91,7 @@ Then run (from within the nix-shell environment):
 
 ```
 $ cmake ..
-$ cmake --build .
+$ make
 ```
 
 This will enter the environment and build the project. Note, that it is an emulation of a common Linux

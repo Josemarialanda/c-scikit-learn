@@ -1,8 +1,0 @@
-/home/jose/Documents/Escuela/servicio social/c-scikit-learn/build/CMakeFiles/rebuild_cache.dir
-/home/jose/Documents/Escuela/servicio social/c-scikit-learn/build/CMakeFiles/edit_cache.dir
-/home/jose/Documents/Escuela/servicio social/c-scikit-learn/build/lib/CMakeFiles/rebuild_cache.dir
-/home/jose/Documents/Escuela/servicio social/c-scikit-learn/build/lib/CMakeFiles/edit_cache.dir
-/home/jose/Documents/Escuela/servicio social/c-scikit-learn/build/lib/CMakeFiles/c-skl.dir
-/home/jose/Documents/Escuela/servicio social/c-scikit-learn/build/test-exe/CMakeFiles/rebuild_cache.dir
-/home/jose/Documents/Escuela/servicio social/c-scikit-learn/build/test-exe/CMakeFiles/edit_cache.dir
-/home/jose/Documents/Escuela/servicio social/c-scikit-learn/build/test-exe/CMakeFiles/main-exe.dir
