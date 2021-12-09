@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 let
   py3 = pkgs.python3;
-  buildTools = with pkgs; [gnumake cmake];
+  buildTools = with pkgs; [gnumake cmake ncurses];
 in pkgs.mkShell {
   buildInputs = [
     py3.pkgs.numpy
@@ -14,9 +14,21 @@ in pkgs.mkShell {
   NIX_LDFLAGS = [
     "-l${py3.libPrefix}"
      ];
-  shellHook = ''
-  	printf "Configuring build environment...\n\n"
-  	echo "If not done already, run cmake .."
-  	echo "Then, run 'make' to build the library"
+  shellHook = ''  	
+	FILE=Makefile
+	
+	alias run-example="./test-exe/main-exe"
+	alias set-build-shared="cmake -D BUILD_SHARED_LIBS=TRUE ."
+	alias set-build-static="cmake -D BUILD_SHARED_LIBS=FALSE ."
+	
+	if [ -f "$FILE" ]; then
+		printf "$FILE found.\n"
+		printf "To build the project, run 'make' from within the build folder."
+	else 
+		printf "$FILE not found. Configuring project.\n\n"
+		cmake ..
+		printf "\nTo build the project, run 'make' from within the build folder."
+	fi
+	  	
   '';
 }

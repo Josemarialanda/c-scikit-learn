@@ -1,0 +1,1 @@
+/nix/store/da9l6ifizmh883j94gzx5n51h8lrrp00-gcc-wrapper-10.3.0/bin/gcc -fPIC -shared -Wl,-soname,libc-skl.so -o libc-skl.so CMakeFiles/c-skl.dir/src/c-skl/skl_helper.c.o CMakeFiles/c-skl.dir/src/c-skl/linear_model/linear_regression/skl_linear_regression.c.o CMakeFiles/c-skl.dir/src/c-skl/svm/svr/skl_svr.c.o 

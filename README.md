@@ -135,3 +135,12 @@ $ make
 This will enter the environment and build the project. Note, that `nix-shell` provides an emulation of a common Linux
 environment rather than the full-featured Nix package expression. No exportable Nix package will appear,
 but local development is possible.
+
+# Build with Nix on Windows
+
+You could try running nix on [WSL](https://docs.microsoft.com/en-us/windows/wsl/). Not sure if it'll work.
+
+Here are some resources that might help:
+
+* [NixOS on WSL(2)](https://github.com/Trundle/NixOS-WSL)
+* [Get started with the Windows Subsystem for Linux](https://docs.microsoft.com/en-us/learn/modules/get-started-with-windows-subsystem-for-linux/)
