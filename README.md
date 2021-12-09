@@ -79,25 +79,59 @@ arr[3]: 13.000000 14.000000 15.000000 16.000000
 
 Note: building this repository with `nix` requires version 2.3 or newer. Check your nix version with `nix --version` in a terminal.
 
-# Build on NixOS
+# Build with Nix
+
+## Install Nix
+
+The quickest way to install Nix is to open a terminal and run the following command (as a user other than `root` with `sudo` permission):
+
+
+```console
+$ curl -L https://nixos.org/nix/install | sh
+```
+
+Make sure to follow the instructions output by the script.
+
+The installation script requires that you have `sudo` access to `root`.
+
+## Verify installation
+
+You may want to verify the integrity of the installation script using GPG:
+
+```console
+$ curl -o install-nix-2.4 https://releases.nixos.org/nix/nix-2.4/install
+$ curl -o install-nix-2.4.asc https://releases.nixos.org/nix/nix-2.4/install.asc
+$ gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
+$ gpg2 --verify ./install-nix-2.4.asc
+$ sh ./install-nix-2.4
+```
+The [signing key](https://nixos.org/edolstra.gpg) has fingerprint `B541 D553 0127 0E0B CF15 CA5D 8170 B472 6D71 98DE`. It is also available on [GitHub](https://github.com/NixOS/nixos-homepage/blob/master/edolstra.gpg).
+
+## Uninstall Nix
+
+You can uninstall Nix simply by running `rm -rf /nix`.
+
+# Build with NixOS
+
+If you use NixOS, nix-shell is already included.
+
+## More on Nix
+
+[Nix Manual](https://nixos.org/manual/nix/stable). Please read the [“Quick Start” section of the manual](https://nixos.org/manual/nix/stable/quick-start.html) for an overview of how to install and use Nix.
 
 The `shell.nix` provides an environment containing the necessary dependencies. To enter the build environment, run (inside the build folder):
 
-```
+```console
 $ nix-shell
 ```
 
 Then run (from within the nix-shell environment):
 
-```
+```console
 $ cmake ..
 $ make
 ```
 
-This will enter the environment and build the project. Note, that it is an emulation of a common Linux
+This will enter the environment and build the project. Note, that `nix-shell` provides an emulation of a common Linux
 environment rather than the full-featured Nix package expression. No exportable Nix package will appear,
 but local development is possible.
-
-# Build with Docker on Linux
-
-I dunno...
