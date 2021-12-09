@@ -10,53 +10,57 @@ This project is independent from [scikit-learn](https://scikit-learn.org/stable/
 
 # Examples
 
-Toy example of a linear regression model ([full code](https://github.com/Josemarialanda/C-wrapper-scikitlearn/blob/master/examples/main.c))
+Toy example of a linear regression model ([full code](https://github.com/Josemarialanda/c-scikit-learn/blob/master/test-exe/main.c)
 
 ```c
-#include "skl/linear_model/linear_regression/skl_linear_regression.h"
+#include <c-skl/linear_model/linear_regression/skl_linear_regression.h>
 
-int main(){
-    
-    skl_linear_regression* reg = skl_get_linear_regression();
-    
-    int r = 4;
-    int c = 4;
-    
+array* fetch_data(int r, int c, int seed){
     array* x = get_array(r,c);
-    array* y = get_array(r,c);
-  
+
     int count = 0;
     for (int i = 0; i < r; i++){
         for (int j = 0; j < c; j++){
-            x->x[i][j] = ++count;
-            y->x[i][j] = ++count+10;
+            x->x[i][j] = ++count; // ++count*seed*(1/25);
         }
     }
-            
+    return x;
+}
+
+int main(){
+
+    initialize_skl();
+
+    array* x = fetch_data(4,4, 25);
+    array* y = fetch_data(4,4, 18);
+
+    skl_linear_regression* reg = skl_get_linear_regression();
     reg->fit(reg, x, y);
-    
-    array* prediction = reg->predict(reg, x);
-    
-    printf("Prediction:\n");
+
+    array* prediction = reg->predict(reg,x);
+    printf("Prediction:\n\n");
     print_array(prediction);
-   
+
     free_array(x);
     free_array(y);
-    free_array(prediction); 
+    free_array(prediction);
+
     reg->purge(reg);
-    
+
+    finalize_skl();
+
     return 0;
 }
 ```
 
 ```
-./out
-
+./main-exe
 Prediction:
-arr[0]: 1.000000 3.000000 5.000000 7.000000
-arr[1]: 9.000000 11.000000 13.000000 15.000000
-arr[2]: 17.000000 19.000000 21.000000 23.000000
-arr[3]: 25.000000 27.000000 29.000000 31.000000
+
+arr[0]: 1.000000 2.000000 3.000000 4.000000
+arr[1]: 5.000000 6.000000 7.000000 8.000000
+arr[2]: 9.000000 10.000000 11.000000 12.000000
+arr[3]: 13.000000 14.000000 15.000000 16.000000
 ```
 
 # Dependencies
@@ -76,16 +80,17 @@ Note: building this repository with `nix` requires version 2.3 or newer. Check y
 
 # Build on NixOS
 
-The `shell.nix` provides an environment containing the necessary dependencies. To enter the build environment, run:
+The `shell.nix` provides an environment containing the necessary dependencies. To enter the build environment, run (inside the build foler):
 
 ```
 $ nix-shell
 ```
 
-To build, run (from within the shell):
+To build, run (from within the nix-shell environment):
 
 ```
-$ make
+$ cmake ..
+$ cmake --build .
 ```
 
 This will enter the environment and build the project. Note, that it is an emulation of a common Linux

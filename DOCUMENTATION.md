@@ -9,25 +9,25 @@ To learn more about the scikit-learn API [click here](https://scikit-learn.org/s
 The folder structure of [c-scikit-learn](https://github.com/Josemarialanda/c-scikit-learn) is the following:
 
 ```
-src
-│   Makefile
-│   shell.nix
+c-skl
+│   skl_helper.h
+│   skl_helper.c
 │
-└───skl
-│   │   helper.h
-│   │   helper.c
+└───linear_model
 │   │
-│   └───linear_model/linear_regression
+│   └───linear_regression
 │       │   skl_linear_regression.h
 │       │   skl_linear_regression.c
-│       │   ...
-│
-└───svm/svr
-    │   skl_svr.h
-    │   skl_svr.c
+│       │
+└───────svm
+        │
+        └────svr
+             │   skl_svr.h
+             │   skl_svc
+    ...
 ```
 
-Each folder in skl contains a distinct model from [scikit-learn](https://scikit-learn.org/stable/modules/classes.html#).
+Each folder in c-skl contains a distinct model from [scikit-learn](https://scikit-learn.org/stable/modules/classes.html#).
 
 # array datatype
 

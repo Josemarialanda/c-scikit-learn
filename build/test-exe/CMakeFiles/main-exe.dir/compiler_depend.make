@@ -265,10 +265,7 @@ test-exe/CMakeFiles/main-exe.dir/main.c.o: ../test-exe/main.c \
   /nix/store/7rfaw11na5ajdgwr55ffzwfibbrdpk8z-glibc-2.33-56-dev/include/bits/ss_flags.h \
   /nix/store/7rfaw11na5ajdgwr55ffzwfibbrdpk8z-glibc-2.33-56-dev/include/bits/types/struct_sigstack.h \
   /nix/store/7rfaw11na5ajdgwr55ffzwfibbrdpk8z-glibc-2.33-56-dev/include/bits/sigthread.h \
-  /nix/store/7rfaw11na5ajdgwr55ffzwfibbrdpk8z-glibc-2.33-56-dev/include/bits/signal_ext.h \
-  ../lib/src/c-skl/svm/svr/skl_svr.h \
-  ../lib/src/c-skl/skl_helper.h \
-  ../lib/src/c-skl/skl_helper.h
+  /nix/store/7rfaw11na5ajdgwr55ffzwfibbrdpk8z-glibc-2.33-56-dev/include/bits/signal_ext.h
 
 
 /nix/store/7rfaw11na5ajdgwr55ffzwfibbrdpk8z-glibc-2.33-56-dev/include/bits/signal_ext.h:
@@ -562,8 +559,6 @@ test-exe/CMakeFiles/main-exe.dir/main.c.o: ../test-exe/main.c \
 /nix/store/5bh6rpya1ar6l49vrhx1rg58dsa42906-python3-3.9.6/include/python3.9/context.h:
 
 /nix/store/7rfaw11na5ajdgwr55ffzwfibbrdpk8z-glibc-2.33-56-dev/include/bits/waitflags.h:
-
-../lib/src/c-skl/svm/svr/skl_svr.h:
 
 /nix/store/7rfaw11na5ajdgwr55ffzwfibbrdpk8z-glibc-2.33-56-dev/include/asm/errno.h:
 
