@@ -65,9 +65,10 @@ arr[3]: 13.000000 14.000000 15.000000 16.000000
 
 # Dependencies
 
-The project was built with:
+[c-scikit-learn](https://github.com/Josemarialanda/c-scikit-learn) was built with:
 
 * GNU Make 4.3
+* CMAKE 3.21.2
 * GCC 10.3.0
 * Nix 2.3
 * Python 3.9.6
@@ -80,13 +81,13 @@ Note: building this repository with `nix` requires version 2.3 or newer. Check y
 
 # Build on NixOS
 
-The `shell.nix` provides an environment containing the necessary dependencies. To enter the build environment, run (inside the build foler):
+The `shell.nix` provides an environment containing the necessary dependencies. To enter the build environment, run (inside the build folder):
 
 ```
 $ nix-shell
 ```
 
-To build, run (from within the nix-shell environment):
+Then run (from within the nix-shell environment):
 
 ```
 $ cmake ..
@@ -98,3 +99,5 @@ environment rather than the full-featured Nix package expression. No exportable 
 but local development is possible.
 
 # Build with Docker on Linux
+
+I dunno...
