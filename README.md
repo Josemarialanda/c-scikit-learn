@@ -128,7 +128,6 @@ $ nix-shell
 Then run (from within the nix-shell environment):
 
 ```console
-$ cmake ..
 $ make
 ```
 
