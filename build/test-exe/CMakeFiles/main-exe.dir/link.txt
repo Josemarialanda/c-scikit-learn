@@ -1,1 +1,0 @@
-/nix/store/da9l6ifizmh883j94gzx5n51h8lrrp00-gcc-wrapper-10.3.0/bin/gcc CMakeFiles/main-exe.dir/main.c.o -o main-exe  -Wl,-rpath,"/home/jose/Documents/Escuela/servicio social/c-scikit-learn/build/lib" ../lib/libc-skl.so 
