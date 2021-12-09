@@ -1,7 +1,7 @@
 #include <c-skl/linear_model/linear_regression/skl_linear_regression.h>
 
 array* fetch_data(int r, int c, int seed){
-    array* x = get_array(r,c);
+    array* x = skl_get_array(r,c);
   
     int count = 0;
     for (int i = 0; i < r; i++){

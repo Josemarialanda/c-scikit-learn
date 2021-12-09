@@ -21,7 +21,7 @@ void print_array(array* arr);
 void error(char* error);
 
 // Gets a pointer to an array struct
-array* get_array(int rows, int cols);
+array* skl_get_array(int rows, int cols);
 
 // Frees the memory of an array struct
 void free_array(array* arr);

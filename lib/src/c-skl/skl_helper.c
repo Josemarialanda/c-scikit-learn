@@ -19,7 +19,7 @@ void error(char* error){
 	exit(1);
 }
 
-array* get_array(int rows, int cols){
+array* skl_get_array(int rows, int cols){
     double** x = (double**)malloc((rows)*sizeof(double*));
     for (int i = 0; i < rows; i++){
         x[i] = (double*)malloc((cols)*sizeof(double));
@@ -285,7 +285,7 @@ int boolean_int_from_from_PyObject(PyObject* b){
 
 array* PyObject_tuple_to_array(PyObject* t){
     int len = PyTuple_Size(t);
-    array* arr = get_array(1,len);
+    array* arr = skl_get_array(1,len);
     for(int i = 0; i < len; ++i){
 		PyObject* obj = PyTuple_GetItem(t,i);
 		arr->x[0][i] = double_from_PyObject(obj);
@@ -310,7 +310,7 @@ array* PyArrayObject_to_array(PyArrayObject* a){
 	    // extract columns info from numpy array
     	npy_intp   c = PyArray_DIMS(a)[1];
     	// create array with correct dimensions
-    	arr = get_array(r,c);
+    	arr = skl_get_array(r,c);
     	// extract datatype from numpy array
     	int typenum  = PyArray_TYPE(a);
     	// parse array depending on internal datatype
@@ -344,7 +344,7 @@ array* PyArrayObject_to_array(PyArrayObject* a){
 		// extract columns info from numpy array
       	npy_intp   c = PyArray_DIMS(a)[0];
       	// create array with correct dimensions
-      	arr = get_array(1,c);
+      	arr = skl_get_array(1,c);
       	// extract datatype from numpy array
     	int typenum  = PyArray_TYPE(a);
     	// parse array depending on internal datatype

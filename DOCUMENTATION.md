@@ -50,7 +50,7 @@ A model has the following structure:
 #define SKL_<MODEL_NAME>
 
 #define NO_IMPORT_ARRAY
-#include "../../helper.h"
+#include "../../skl_helper.h"
 
 typedef struct skl_<model_name> skl_<model_name>;
 
