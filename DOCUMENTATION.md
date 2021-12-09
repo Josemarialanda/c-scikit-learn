@@ -6,7 +6,7 @@ To learn more about the scikit-learn API [click here](https://scikit-learn.org/s
 # c-scikit-learn implementation
 
 
-the folder structure of [c-scikit-learn](https://github.com/Josemarialanda/c-scikit-learn) is the following:
+The folder structure of [c-scikit-learn](https://github.com/Josemarialanda/c-scikit-learn) is the following:
 
 ```
 src
@@ -31,7 +31,7 @@ Each folder in skl contains a distinct model from [scikit-learn](https://scikit-
 
 # array datatype
 
-[c-scikit-learn](https://github.com/Josemarialanda/c-scikit-learn) makes use of a double** wrapper, which is used by every model in [c-scikit-learn](https://github.com/Josemarialanda/c-scikit-learn).
+[c-scikit-learn](https://github.com/Josemarialanda/c-scikit-learn) makes use of a `double**` wrapper, which is used by every model in [c-scikit-learn](https://github.com/Josemarialanda/c-scikit-learn).
 
 ```c
 typedef struct array{
@@ -82,9 +82,10 @@ struct skl_<model_name> {
  	void (*purge)(skl_<model_name>* m);
 };
 
-skl_<model_name>* skl_get_<model_name>(); // fetches a <model_name> struct with default parameters
+// fetches a <model_name> struct with default parameters
+skl_<model_name>* skl_get_<model_name>();
 
-#endif /* SKL_LINEAR_REGRESSION */
+#endif /* SKL_<MODEL_NAME> */
 ```
 
 Other than that, the functionality is pretty much the same as in [scikit-learn](https://scikit-learn.org/stable/modules/classes.html#).
