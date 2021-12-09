@@ -1,6 +1,6 @@
 # Scikit-learn API Reference
 
-For learn more about the scikit-learn API [click here](https://scikit-learn.org/stable/modules/classes.html#).
+To learn more about the scikit-learn API [click here](https://scikit-learn.org/stable/modules/classes.html#).
 
 
 # c-scikit-learn implementation
