@@ -63,57 +63,58 @@ arr[2]: 9.000000 10.000000 11.000000 12.000000
 arr[3]: 13.000000 14.000000 15.000000 16.000000
 ```
 
-# Dependencies
+# Install Instructions
 
-[c-scikit-learn](https://github.com/Josemarialanda/c-scikit-learn) was built with:
-
-* GNU Make 4.3
-* CMAKE 3.21.2
-* GCC 10.3.0
-* Nix 2.3
-* Python 3.9.6
-* Scikit-learn 1.0.1
-* Numpy 1.21.4
-
-# Installation Instructions
-
-Note: building this repository with `nix` requires version 2.3 or newer. Check your nix version with `nix --version` in a terminal.
+Note: building this repository with `nix` requires version 2.4 or newer and flake support. Check your nix version with `nix --version` in a terminal.
 
 # Build with Nix
 
 ## Install Nix
 
-The quickest way to install Nix is to open a terminal and run the following command (as a user other than `root` with `sudo` permission):
+[NixOS - Getting Nix / NixOS](https://nixos.org/download.html#nix-install-linux)
 
+## Enable flakes
 
-```console
-$ curl -L https://nixos.org/nix/install | sh
+**Nix Flakes** are an upcoming feature of the Nix package manager. We use flakes to pin **nixpkgs** to a specific version to ensure *hermetic* builds.
+
+### Installing flakes
+
+#### NixOS
+
+In NixOS this can be achieved with the following options in `configuration.nix`.
+
+**System-wide installation:**
+
+```nix
+{ pkgs, ... }: {
+  nix = {
+    package = pkgs.nixFlakes; # or versioned attributes like nix_2_7
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+   };
+}
 ```
 
-Make sure to follow the instructions output by the script.
+#### Non-NixOS
 
-The installation script requires that you have `sudo` access to `root`.
+On non-nixos systems, install `nixFlakes` in your environment:
 
-## Verify installation
-
-You may want to verify the integrity of the installation script using GPG:
-
-```console
-$ curl -o install-nix-2.4 https://releases.nixos.org/nix/nix-2.4/install
-$ curl -o install-nix-2.4.asc https://releases.nixos.org/nix/nix-2.4/install.asc
-$ gpg2 --recv-keys B541D55301270E0BCF15CA5D8170B4726D7198DE
-$ gpg2 --verify ./install-nix-2.4.asc
-$ sh ./install-nix-2.4
+```bash
+$ nix-env -iA nixpkgs.nixFlakes
 ```
-The [signing key](https://nixos.org/edolstra.gpg) has fingerprint `B541 D553 0127 0E0B CF15 CA5D 8170 B472 6D71 98DE`. It is also available on [GitHub](https://github.com/NixOS/nixos-homepage/blob/master/edolstra.gpg).
 
-## Uninstall Nix
+Edit either `~/.config/nix/nix.conf` or `/etc/nix/nix.conf` and add:
 
-You can uninstall Nix simply by running `rm -rf /nix`.
+```bash
+experimental-features = nix-command flakes
+```
+
+This is needed to expose the Nix 2.0 CLI and flakes support that are hidden behind feature-flags. Finally, if the Nix installation is in multi-user mode, don’t forget to restart the nix-daemon. There is no official installer yet, but you can use the [nix-unstable-installer](https://github.com/numtide/nix-unstable-installer#systems):
 
 # Build with NixOS
 
-If you use NixOS, nix-shell is already included.
+If you use NixOS, nix is already included. One needs only enable flake support in `configuration.nix`. 
 
 ## More on Nix
 
@@ -122,7 +123,7 @@ If you use NixOS, nix-shell is already included.
 The `shell.nix` provides an environment containing the necessary dependencies. To enter the build environment, run (inside the build folder):
 
 ```console
-$ nix-shell
+$ nix develop
 ```
 
 Then run (from within the nix-shell environment):
@@ -131,15 +132,4 @@ Then run (from within the nix-shell environment):
 $ make
 ```
 
-This will enter the environment and build the project. Note, that `nix-shell` provides an emulation of a common Linux
-environment rather than the full-featured Nix package expression. No exportable Nix package will appear,
-but local development is possible.
-
-# Build with Nix on Windows
-
-You could try running nix on [WSL](https://docs.microsoft.com/en-us/windows/wsl/). Not sure if it'll work.
-
-Here are some resources that might help:
-
-* [NixOS on WSL(2)](https://github.com/Trundle/NixOS-WSL)
-* [Get started with the Windows Subsystem for Linux](https://docs.microsoft.com/en-us/learn/modules/get-started-with-windows-subsystem-for-linux/)
+This will enter the environment and build the project. Note, that `nix-shell` provides an emulation of a common Linux environment rather than the full-featured Nix package expression. No exportable Nix package will appear, but local development is possible.
